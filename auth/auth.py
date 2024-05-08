@@ -16,13 +16,17 @@ from dotenv import load_dotenv
 load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 
+# current file directory
+root = os.path.dirname(os.path.abspath(__file__))
+
+
 def authenticate(username, password):
     url = f"{BASE_URL}/login"
     response = requests.post(url, json={'username': username, 'password': password})
     if response.status_code == 200:
         token = response.json()['token']
         miner_id = response.json()['minerId']
-        auth_path = './auth'
+        auth_path = os.path.abspath(os.path.join(root,'auth'))
         if not os.path.exists(auth_path):
             os.makedirs(auth_path)
         with open(os.path.join(auth_path, 'token.txt'), 'w') as f:
@@ -33,6 +37,7 @@ def authenticate(username, password):
     else:
         print("Authentication failed.")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
