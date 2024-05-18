@@ -13,6 +13,10 @@ load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN")
 
+# current file directory
+root = os.path.dirname(os.path.abspath(__file__))
+
+
 def create_runpod_instance(model_id):
     gpu_count = 1
     pod = runpod.create_pod(
@@ -62,8 +66,8 @@ def submit_to_runpod(script_path, runpod_api_key):
         submit_job_to_pod(script_path, pod_id)
 
 async def get_token_and_miner_id():
-    token_path = os.path.join(os.getcwd(), 'auth', 'token.txt')
-    miner_id_path = os.path.join(os.getcwd(), 'auth', 'miner_id.txt')
+    token_path = os.path.join(os.getcwd(), '../auth/auth', 'token.txt')
+    miner_id_path = os.path.join(os.getcwd(), '../auth/auth', 'miner_id.txt')
     try:
         with open(token_path, 'r') as f:
             token = f.read().strip()
@@ -73,6 +77,7 @@ async def get_token_and_miner_id():
     except Exception as e:
         print(f"Error reading token or miner ID: {e}")
         sys.exit(1)
+
 
 async def fetch_jobs():
     print("Waiting for training jobs")
@@ -86,11 +91,13 @@ async def fetch_jobs():
                 print(f"Failed to fetch jobs: {await response.text()}")
                 return []
 
+
 async def fetch_and_save_job_details(job_id):
     token, miner_id = await get_token_and_miner_id()
     async with aiohttp.ClientSession() as session:
         headers = {'Authorization': f'Bearer {token}'}
-        async with session.post(f"{BASE_URL}/start-training/{job_id}", headers=headers, json={'minerId': miner_id}) as response:
+        async with session.post(f"{BASE_URL}/start-training/{job_id}", headers=headers,
+                                json={'minerId': miner_id}) as response:
             if response.status == 200:
                 job_details = await response.json()
                 job_dir = os.path.join(os.getcwd(), 'jobs', job_id)
@@ -103,6 +110,7 @@ async def fetch_and_save_job_details(job_id):
             else:
                 print(f"Failed to start training for job {job_id}: {await response.text()}")
                 return None
+
 
 async def update_job_status(job_id, status):
     url = f"{BASE_URL}/update-status/{job_id}"
