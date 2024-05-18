@@ -1,0 +1,31 @@
+{
+  "baseModel": "apple/OpenELM-450M",
+  "seed": "Random",
+  "huggingFaceId": "g-ronimo/oasst2_top4k_en",
+  "fineTuningType": "text-generation",
+  "suffix": "OpenELM-450M_v2",
+  "numberOfEpochs": "0",
+  "userId": "dZhabDtALkOxnJYluQUrCBvRrGd2",
+  "batchSizeAuto": "true",
+  "numberOfEpochsAuto": "true",
+  "validationDataOption": "none",
+  "trainingDataOption": "selectExisting",
+  "modelParams": "",
+  "validationCriteria": "",
+  "learningRateMultiplier": "0",
+  "expectedOutcome": "cdftgvybhunj",
+  "learningRateAuto": "true",
+  "batchSize": "0",
+  "status": "pending",
+  "createdAt": {
+    "_seconds": 1715703585,
+    "_nanoseconds": 125000000
+  },
+  "scriptPath": "scripts/NEKEKekYNnQVvutW1qd4/2024-05-14T16-19-45.273Z-script.py",
+  "validationFilePath": "",
+  "trainingFilePath": "",
+  "scriptUrl": "https://storage.googleapis.com/echo-fe663.appspot.com/scripts/NEKEKekYNnQVvutW1qd4/2024-05-14T16-19-45.273Z-script.py?GoogleAccessId=firebase-adminsdk-x8w53%40echo-fe663.iam.gserviceaccount.com&Expires=16447006800&Signature=PPQI50X1ffLn1hdFWT%2BLZGmGVTGaChr2lovtgegELwdfJhkEEKT%2BMr76MoGCY16MXK%2ByhJx6njBy72Qcl68kTyoz4otaFCQy735GL%2B98lDejnx22dCYvFzxzMSkDsC73fPHJZWb5wlSKkpcRAFUZad0yKbaO%2FvBJyPHsCIJiYzY2OJBb8CzENlzaX5UAEcc8QQFzpdrCZbSmYqUtEFIAm%2BHbawxRyvWbbm828lbD1FPBIrWpBgWCdaKXqIVUb8bwMl21G1UfsQNrkcPJm2Oec%2FqwdwzFNFKd9eZG1fuo9wsnhsndge99KyMLFVXeSYZHWNUFO%2FVN%2BgFkJB9atIIbSA%3D%3D",
+  "trainingFileUrl": "",
+  "validationFileUrl": "",
+  "jobId": "NEKEKekYNnQVvutW1qd4"
+}

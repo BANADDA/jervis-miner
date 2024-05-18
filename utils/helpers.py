@@ -1,18 +1,69 @@
 import asyncio
+import requests
 import json
 import os
 import sys
+import time
 
 import aiohttp
+import runpod
 from dotenv import load_dotenv
 
 load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN")
 
+def create_runpod_instance(model_id):
+    gpu_count = 1
+    pod = runpod.create_pod(
+        name="Apple_train",
+        image_name="runpod/stable-diffusion",
+        gpu_type_id="NVIDIA GeForce RTX 4090",
+        data_center_id="EU-RO-1",
+        cloud_type="SECURE",
+        docker_args=f"--model-id {model_id}",
+        gpu_count=gpu_count,
+        volume_in_gb=5,
+        container_disk_in_gb=5,
+        ports="8080/http,29500/http",
+        volume_mount_path="/data",
+    )
+    
+    if pod:
+        print(f"Pod created successfully: {pod}")
+        return pod["pod_id"]
+    else:
+        print(f"Failed to create pod")
+        return None
+
+def wait_for_pod_ready(pod_id):
+    while True:
+        status = runpod.get_pod_status(pod_id)
+        if status == "RUNNING":
+            print(f"Pod {pod_id} is ready")
+            break
+        else:
+            print(f"Pod {pod_id} status: {status}")
+        time.sleep(10)
+
+def submit_job_to_pod(script_path, pod_id):
+    job = runpod.submit_job(pod_id, script_path, command=f"python {os.path.basename(script_path)}")
+    if job:
+        print(f"Job submitted successfully: {job}")
+    else:
+        print(f"Failed to submit job")
+
+def submit_to_runpod(script_path, runpod_api_key):
+    runpod.api_key = runpod_api_key  # Set the API key for runpod
+    model_id = "apple/OpenELM-450M"  # Hard-coded model ID for example purposes
+    pod_id = create_runpod_instance(model_id)
+    if pod_id:
+        wait_for_pod_ready(pod_id)
+        submit_job_to_pod(script_path, pod_id)
+
 async def get_token_and_miner_id():
-    token_path = os.path.join(os.getcwd(), '../auth/auth', 'token.txt')
-    miner_id_path = os.path.join(os.getcwd(), '../auth/auth', 'miner_id.txt')
+    token_path = os.path.join(os.getcwd(), 'auth', 'token.txt')
+    miner_id_path = os.path.join(os.getcwd(), 'auth', 'miner_id.txt')
     try:
         with open(token_path, 'r') as f:
             token = f.read().strip()

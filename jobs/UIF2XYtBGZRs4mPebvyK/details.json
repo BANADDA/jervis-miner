@@ -1,0 +1,31 @@
+{
+  "baseModel": "898009",
+  "seed": "Random",
+  "huggingFaceId": "898980",
+  "fineTuningType": "language-modeling",
+  "suffix": "hghg",
+  "numberOfEpochs": "0",
+  "userId": "7zGOTQJhPXZQalwmIruLYjoTMhj1",
+  "batchSizeAuto": "true",
+  "numberOfEpochsAuto": "true",
+  "validationDataOption": "uploadNew",
+  "trainingDataOption": "selectExisting",
+  "modelParams": "",
+  "validationCriteria": "",
+  "learningRateMultiplier": "0",
+  "expectedOutcome": "hgbb",
+  "learningRateAuto": "true",
+  "batchSize": "0",
+  "status": "pending",
+  "createdAt": {
+    "_seconds": 1715534579,
+    "_nanoseconds": 734000000
+  },
+  "scriptPath": "scripts/UIF2XYtBGZRs4mPebvyK/2024-05-12T17-22-59.900Z-script.py",
+  "validationFilePath": "",
+  "trainingFilePath": "",
+  "scriptUrl": "https://storage.googleapis.com/echo-fe663.appspot.com/scripts/UIF2XYtBGZRs4mPebvyK/2024-05-12T17-22-59.900Z-script.py?GoogleAccessId=firebase-adminsdk-x8w53%40echo-fe663.iam.gserviceaccount.com&Expires=16447006800&Signature=LSlAuCJ0wCbhBRr19LV%2FcN9jsJ6WST1bUiFy8YhxQj473SQ0qumdWXT8Uuc4zN1Thjnk2trJ13NLeQCNiGkhJ%2BpChzS%2F4yFvsIoCqTIcy4YxOWCjhsTFXDNmS%2B0Ljq2Q3hCP0vBW8STVf7IawuvcsK%2BjrwG%2B3Le0hqS5h0TsVBU9g9U%2BfOuIeUfr37sG9RmlJwKmlWpz%2BeSyolQ7rCRi7kyMR6xsO%2BckISfCih0Girht4gC6z44qHVp5oQOzNasVM%2BZmeWc82j8lqQB3XPE6g2sRxE2Erz8QR0Bj2BgL6%2BhDAw2AMvkAUBzRoQUaKDE5IfTDJPg%2Bm%2BQrK659KVspNQ%3D%3D",
+  "trainingFileUrl": "",
+  "validationFileUrl": "",
+  "jobId": "UIF2XYtBGZRs4mPebvyK"
+}

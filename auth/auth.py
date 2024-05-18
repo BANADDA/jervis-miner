@@ -17,6 +17,7 @@ load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 
 def authenticate(username, password):
+    print("Username $ password: ", username, " ", password)
     url = f"{BASE_URL}/login"
     response = requests.post(url, json={'username': username, 'password': password})
     if response.status_code == 200:
@@ -36,7 +37,7 @@ def authenticate(username, password):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python script.py command [args]")
+        print("Usage: python auth.py command [args]")
         sys.exit(1)
 
     command = sys.argv[1]
