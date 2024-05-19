@@ -66,8 +66,8 @@ def submit_to_runpod(script_path, runpod_api_key):
         submit_job_to_pod(script_path, pod_id)
 
 async def get_token_and_miner_id():
-    token_path = os.path.join(os.getcwd(), '../auth/auth', 'token.txt')
-    miner_id_path = os.path.join(os.getcwd(), '../auth/auth', 'miner_id.txt')
+    token_path = os.path.join(root, 'auth', 'auth', 'token.txt')
+    miner_id_path = os.path.join(root, 'auth', 'auth', 'miner_id.txt')
     try:
         with open(token_path, 'r') as f:
             token = f.read().strip()
@@ -100,7 +100,7 @@ async def fetch_and_save_job_details(job_id):
                                 json={'minerId': miner_id}) as response:
             if response.status == 200:
                 job_details = await response.json()
-                job_dir = os.path.join(os.getcwd(), 'jobs', job_id)
+                job_dir = os.path.join(root, 'jobs', job_id)
                 os.makedirs(job_dir, exist_ok=True)
                 details_path = os.path.join(job_dir, 'details.json')
                 job_details['jobId'] = job_id
