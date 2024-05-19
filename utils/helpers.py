@@ -1,3 +1,5 @@
+# utils/helpers.py
+
 import asyncio
 import requests
 import json
@@ -67,6 +69,8 @@ def submit_to_runpod(script_path, runpod_api_key):
 async def get_token_and_miner_id():
     token_path = os.path.join(root, 'auth', 'auth', 'token.txt')
     miner_id_path = os.path.join(root, 'auth', 'auth', 'miner_id.txt')
+    print(f"Expected token path: {token_path}")
+    print(f"Expected miner ID path: {miner_id_path}")
     try:
         with open(token_path, 'r') as f:
             token = f.read().strip()
