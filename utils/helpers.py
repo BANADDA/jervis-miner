@@ -95,7 +95,7 @@ async def fetch_and_save_job_details(job_id):
         headers = {'Authorization': f'Bearer {token}'}
         async with session.post(f"{BASE_URL}/start-training/{job_id}", headers=headers,
                                 json={'minerId': miner_id}) as response:
-            if response.status == 200):
+            if (response.status == 200):
                 job_details = await response.json()
                 job_dir = os.path.join(root, 'jobs', job_id)
                 os.makedirs(job_dir, exist_ok=True)
