@@ -35,7 +35,7 @@ async def process_job(job_details, run_on_runpod=False, runpod_api_key=None):
             generate_pipeline_script(job_details, script_path)
             submit_to_runpod(script_path, runpod_api_key)
         else:
-            await fine_tune_openELM(job_id, model_id, dataset_id)
+            await fine_tune_gpt(job_id, model_id, dataset_id)
 
         await update_job_status(job_id, 'completed')
     except Exception as e:
