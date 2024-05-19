@@ -1,13 +1,8 @@
-# auth/auth.py
-
 import json
 import os
 import sys
-import time
-
-import prettytable
 import requests
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 
 # Load environment variables
 load_dotenv()
@@ -20,13 +15,12 @@ def authenticate(username, password):
     if response.status_code == 200:
         token = response.json()['token']
         miner_id = response.json()['minerId']
-        auth_path = './auth'  # Ensure this path is correct
-        if not os.path.exists(auth_path):
-            os.makedirs(auth_path)
-        with open(os.path.join(auth_path, 'token.txt'), 'w') as f:
-            f.write(token)
-        with open(os.path.join(auth_path, 'miner_id.txt'), 'w') as f:
-            f.write(str(miner_id))
+        
+        # Save token and miner ID to .env file
+        env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+        set_key(env_path, "TOKEN", token)
+        set_key(env_path, "MINER_ID", str(miner_id))
+
         print("Authentication successful. Token and Miner ID saved.")
     else:
         print("Authentication failed.")
