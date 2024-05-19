@@ -13,8 +13,8 @@ load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN")
 
-# Set the root directory to be two levels up from the current file (i.e., project root)
-root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+# Set the root directory to be one level up from the current file (i.e., project root)
+root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 def create_runpod_instance(model_id):
     gpu_count = 1
@@ -95,7 +95,7 @@ async def fetch_and_save_job_details(job_id):
         headers = {'Authorization': f'Bearer {token}'}
         async with session.post(f"{BASE_URL}/start-training/{job_id}", headers=headers,
                                 json={'minerId': miner_id}) as response:
-            if response.status == 200:
+            if response.status == 200):
                 job_details = await response.json()
                 job_dir = os.path.join(root, 'jobs', job_id)
                 os.makedirs(job_dir, exist_ok=True)
