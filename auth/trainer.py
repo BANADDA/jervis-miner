@@ -51,6 +51,7 @@ async def check_for_stop(stop_event):
             stop_event.set()
             break
         await asyncio.sleep(1)
+
 async def display_spinner(stop_event):
     spinner = Halo(text='Waiting for jobs', spinner='dots')
     spinner.start()
@@ -76,7 +77,7 @@ async def main(args, stop_event):
                     runpod_api_key=args.runpod_api_key
                 )
                 print(f"Job {job_id} processed successfully")
-        await asyncio.sleep(100)
+        await asyncio.sleep(2)  # Check for jobs every 2 seconds
     print("Exiting main loop.")
 
 if __name__ == "__main__":
