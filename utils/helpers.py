@@ -13,9 +13,8 @@ load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN")
 
-# current file directory
-root = os.path.dirname(os.path.abspath(__file__))
-
+# Set the root directory to be two levels up from the current file (i.e., project root)
+root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 def create_runpod_instance(model_id):
     gpu_count = 1
@@ -78,7 +77,6 @@ async def get_token_and_miner_id():
         print(f"Error reading token or miner ID: {e}")
         sys.exit(1)
 
-
 async def fetch_jobs():
     print("Waiting for training jobs")
     token, _ = await get_token_and_miner_id()
@@ -90,7 +88,6 @@ async def fetch_jobs():
             else:
                 print(f"Failed to fetch jobs: {await response.text()}")
                 return []
-
 
 async def fetch_and_save_job_details(job_id):
     token, miner_id = await get_token_and_miner_id()
@@ -110,7 +107,6 @@ async def fetch_and_save_job_details(job_id):
             else:
                 print(f"Failed to start training for job {job_id}: {await response.text()}")
                 return None
-
 
 async def update_job_status(job_id, status):
     url = f"{BASE_URL}/update-status/{job_id}"
