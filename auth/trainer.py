@@ -12,10 +12,6 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.live import Live
 from rich.table import Table
-from InquirerPy import inquirer
-from InquirerPy.base.control import Choice
-import threading
-import keyboard
 from dotenv import load_dotenv
 
 # Append directories to sys.path for relative imports
@@ -40,9 +36,6 @@ TOKEN = os.getenv("TOKEN")
 MINER_ID = os.getenv("MINER_ID")
 
 console = Console()
-
-pause_fetching = threading.Event()
-stop_fetching = threading.Event()
 
 def display_welcome_message():
     fig = pyfiglet.Figlet(font='slant')
@@ -116,33 +109,6 @@ async def process_job(job_details, run_on_runpod=False, runpod_api_key=None):
         console.log(f"Failed to process job {job_id}: {str(e)}")
         await update_job_status(job_id, 'failed')
 
-async def handle_pause():
-    global stop_fetching
-    options = [
-        Choice(name="Continue", value="continue"),
-        Choice(name="Stop", value="stop")
-    ]
-    choice = await inquirer.select(
-        message="Job fetching paused. Choose an option:",
-        choices=options,
-        default="continue",
-    ).execute_async()
-
-    if choice == "stop":
-        stop_fetching.set()
-    pause_fetching.clear()
-
-def listen_for_key_presses():
-    while True:
-        if keyboard.is_pressed("p"):
-            pause_fetching.set()
-        if keyboard.is_pressed("c"):
-            stop_fetching.set()
-
-def run_keyboard_listener():
-    listener_thread = threading.Thread(target=listen_for_key_presses, daemon=True)
-    listener_thread.start()
-
 async def main(args):
     display_welcome_message()
 
@@ -161,17 +127,8 @@ async def main(args):
     progress_table.add_column(justify="center", ratio=1)
     progress_table.add_row(Panel("Executing...", title="Status", border_style="green"))
 
-    run_keyboard_listener()
-
     with Live(progress_table, refresh_per_second=10, console=console) as live:
         while True:
-            if stop_fetching.is_set():
-                console.log("[bold red]Job fetching stopped by user.[/bold red]")
-                break
-
-            if pause_fetching.is_set():
-                await handle_pause()
-
             progress_table.rows[0].renderable = Panel("Executing...", title="Status", border_style="green")
             jobs = await fetch_jobs()
 
