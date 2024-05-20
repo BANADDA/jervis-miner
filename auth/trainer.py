@@ -1,4 +1,6 @@
 import os
+import ssl
+import aiohttp
 import sys
 import json
 import time
@@ -45,16 +47,25 @@ def display_welcome_message():
 
 async def fetch_jobs():
     console.log("Waiting for training jobs")
-    async with aiohttp.ClientSession() as session:
+    timeout = aiohttp.ClientTimeout(total=120)  # Increased timeout to 120 seconds
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+
+    async with aiohttp.ClientSession(timeout=timeout, connector=aiohttp.TCPConnector(ssl=ssl_context)) as session:
         headers = {'Authorization': f'Bearer {TOKEN}'}
-        async with session.get(f"{BASE_URL}/pending-jobs", headers=headers) as response:
-            if response.status == 200:
-                return await response.json()
-            elif response.status == 401:
-                return "Unauthorized"
-            else:
-                console.log(f"Failed to fetch jobs: {await response.text()}")
-                return []
+        try:
+            async with session.get(f"{BASE_URL}/pending-jobs", headers=headers) as response:
+                if response.status == 200:
+                    return await response.json()
+                elif response.status == 401:
+                    return "Unauthorized"
+                else:
+                    console.log(f"Failed to fetch jobs: {await response.text()}")
+                    return []
+        except aiohttp.ClientConnectorError as e:
+            console.log(f"Connection error: {e}")
+            return []
 
 async def fetch_and_save_job_details(job_id):
     async with aiohttp.ClientSession() as session:
