@@ -1,5 +1,6 @@
 aiohttp
 pyfiglet
+keyboard
 InquirerPy
 prompt_toolkit
 argparse
