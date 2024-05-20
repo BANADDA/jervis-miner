@@ -93,6 +93,7 @@ async def process_job(job_details, run_on_runpod=False, runpod_api_key=None):
     model_id = job_details['baseModel']
     dataset_id = job_details['huggingFaceId']
     job_id = job_details['jobId']
+    new_model_name = job_id
 
     try:
         if run_on_runpod:
@@ -102,13 +103,14 @@ async def process_job(job_details, run_on_runpod=False, runpod_api_key=None):
             generate_pipeline_script(job_details, script_path)
             submit_to_runpod(script_path, runpod_api_key)
         else:
-            await fine_tune_openELM(job_id, model_id, dataset_id)
+            model_repo_url = fine_tune_llama(model_id, dataset_id, new_model_name, HF_ACCESS_TOKEN)
+            console.log(f"Model uploaded to: {model_repo_url}")
 
         await update_job_status(job_id, 'completed')
     except Exception as e:
         console.log(f"Failed to process job {job_id}: {str(e)}")
         await update_job_status(job_id, 'failed')
-
+        
 async def main(args):
     display_welcome_message()
 
