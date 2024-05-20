@@ -1,4 +1,7 @@
 aiohttp
+pyfiglet
+InquirerPy
+prompt_toolkit
 argparse
 asyncio
 datasets

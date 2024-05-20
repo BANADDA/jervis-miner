@@ -1,4 +1,5 @@
 import asyncio
+import requests
 import json
 import os
 import sys
@@ -13,6 +14,10 @@ BASE_URL = os.getenv("BASE_URL")
 HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN")
 TOKEN = os.getenv("TOKEN")
 MINER_ID = os.getenv("MINER_ID")
+
+# # current file directory
+# root = os.path.dirname(os.path.abspath(__file__))
+
 
 def create_runpod_instance(model_id):
     gpu_count = 1
@@ -69,6 +74,8 @@ async def fetch_jobs():
         async with session.get(f"{BASE_URL}/pending-jobs", headers=headers) as response:
             if response.status == 200:
                 return await response.json()
+            elif response.status == 401:
+                return "Unauthorized"
             else:
                 print(f"Failed to fetch jobs: {await response.text()}")
                 return []
@@ -78,9 +85,9 @@ async def fetch_and_save_job_details(job_id):
         headers = {'Authorization': f'Bearer {TOKEN}'}
         async with session.post(f"{BASE_URL}/start-training/{job_id}", headers=headers,
                                 json={'minerId': MINER_ID}) as response:
-            if (response.status == 200):
+            if response.status == 200:
                 job_details = await response.json()
-                job_dir = os.path.join(os.path.dirname(__file__), '..', 'jobs', job_id)
+                job_dir = os.path.join(os.getcwd(), 'jobs', job_id)
                 os.makedirs(job_dir, exist_ok=True)
                 details_path = os.path.join(job_dir, 'details.json')
                 job_details['jobId'] = job_id
@@ -97,7 +104,7 @@ async def update_job_status(job_id, status):
         headers = {'Authorization': f'Bearer {TOKEN}', 'Content-Type': 'application/json'}
         async with session.patch(url, json={'status': status}, headers=headers) as response:
             try:
-                if (response.status == 200):
+                if response.status == 200:
                     print(f"Status updated to {status} for job {job_id}")
                 else:
                     response.raise_for_status()
@@ -105,3 +112,6 @@ async def update_job_status(job_id, status):
                 print(f"Failed to update status for job {job_id}: {err}")
             except Exception as e:
                 print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(fetch_jobs())
