@@ -1,5 +1,6 @@
 aiohttp
 pyfiglet
+tensorboard
 keyboard
 InquirerPy
 prompt_toolkit
