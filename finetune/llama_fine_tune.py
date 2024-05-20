@@ -20,7 +20,6 @@ def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token):
     dataset_dir = os.path.join("data", dataset_id)
     model_dir = os.path.join("models", new_model_name)
     os.makedirs(dataset_dir, exist_ok=True)
-    os.makedirs(model_dir, exist_ok=True)
 
     try:
         # Load dataset
@@ -101,6 +100,12 @@ def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token):
         trainer.model.save_pretrained(model_dir)
         trainer.tokenizer.save_pretrained(model_dir)
 
+        # Check if the model directory exists and is a git repository
+        if os.path.exists(model_dir) and not os.path.exists(os.path.join(model_dir, '.git')):
+            # If the directory is not empty and not a git repository, remove it
+            shutil.rmtree(model_dir)
+            os.makedirs(model_dir)
+
         # Upload model to Hugging Face
         api = HfApi()
         repo_url = api.create_repo(repo_id=new_model_name, token=hf_token)
@@ -110,9 +115,8 @@ def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token):
         return repo_url
 
     finally:
-        # Clean up the dataset and model directories
+        # Clean up the dataset directory
         shutil.rmtree(dataset_dir)
-        shutil.rmtree(model_dir)
 
 if __name__ == "__main__":
     parser = HfArgumentParser((str, str, str))
