@@ -1,22 +1,22 @@
-# import os
+# fine_tune_llama.py
+
 import os
 import shutil
 import torch
+import asyncio
 from datasets import load_dataset
-from dataclasses import dataclass
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     BitsAndBytesConfig,
     TrainingArguments,
-    HfArgumentParser,
 )
 from peft import LoraConfig
 from trl import SFTTrainer
-from huggingface_hub import HfApi, HfFolder, Repository
+from huggingface_hub import HfApi, Repository
+from helpers import update_job_status
 
-
-def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token):
+async def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token, job_id):
     """Train a model with the given parameters and upload it to Hugging Face."""
 
     # Designate directories
@@ -70,7 +70,7 @@ def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token):
             optim="paged_adamw_32bit",
             save_steps=25,
             logging_steps=25,
-            learning_rate=2e-4,
+            learning_rate=2e-5,
             weight_decay=0.001,
             fp16=False,
             bf16=False,
@@ -96,7 +96,11 @@ def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token):
         )
 
         # Train model
-        trainer.train()
+        try:
+            trainer.train()
+        except Exception as e:
+            await update_job_status(job_id, 'pending')  # Update status back to pending
+            raise RuntimeError(f"Training failed: {str(e)}")
 
         # Create repository on Hugging Face and clone it locally
         api = HfApi()
@@ -114,9 +118,14 @@ def fine_tune_llama(base_model, dataset_id, new_model_name, hf_token):
 
         return repo_url
 
+    except Exception as e:
+        await update_job_status(job_id, 'pending')
+        raise RuntimeError(f"Training pipeline encountered an error: {str(e)}")
+
     finally:
         # Clean up the dataset directory
         shutil.rmtree(dataset_dir)
+
 
 # hf_token = "xxxxxxxxxxx"
 # model_id = "NousResearch/Llama-2-7b-chat-hf"
