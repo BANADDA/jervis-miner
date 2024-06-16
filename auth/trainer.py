@@ -24,7 +24,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'f
 
 from bert_fine_tune import fine_tune_bert
 from gpt_fine_tune import fine_tune_gpt
-from open_elm import fine_tune_openELM
+# from open_elm import fine_tune_openELM
 from llama_fine_tune import fine_tune_llama
 from t5_fine_tune import fine_tune_t5
 from pipeline import generate_pipeline_script
